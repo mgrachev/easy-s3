@@ -1,3 +1,4 @@
+.coveralls.yml
 .idea/
 vendor/
 *.gem
