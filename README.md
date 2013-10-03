@@ -22,21 +22,15 @@ Or install it yourself as:
 
 ## Usage
 
-First, set the credentials for Fog:
-
-    Fog.credentials = {
-      aws_access_key_id: 'XXX',
-      aws_secret_access_key: 'XXXX'
-    }
-
 Create instance of EasyS3:
 
-    s3 = EasyS3.new('my-bucket')
+    s3 = EasyS3.new('my-bucket', access_key_id: 'XXX', secret_access_key: 'XXXX')
     
 Create private or public file:
 
     file_url = s3.create_file(path_to_file) # private
-    file_url = s3.create_file(path_to_file, true) # public
+    file_url = s3.create_file(path_to_file, public: true) # public
+    file_url = s3.create_file(path_to_file, digest: true) # with digest
     
 Delete file by url:
 
