@@ -8,13 +8,20 @@ class EasyS3
 
   attr_reader :fog, :dir
 
-  def initialize(dir_name)
+  def initialize(dir_name, options={})
+    options[:access_key_id]     ||= Fog.credentials[:aws_access_key_id]
+    options[:secret_access_key] ||= Fog.credentials[:aws_secret_access_key]
+
+    Fog.credentials = {
+        aws_access_key_id:      options[:access_key_id],
+        aws_secret_access_key:  options[:secret_access_key]
+    }
+
     begin
-      #Fog.credentials = { aws_access_key_id: 'XXX', aws_secret_access_key: 'XXXX' }
       @fog = Fog::Storage.new(provider: 'AWS')
       @dir = @fog.directories.get(dir_name)
     rescue ArgumentError
-      raise MissingOptions, 'aws_access_key_id or aws_secret_access_key'
+      raise MissingOptions, 'access_key_id or secret_access_key'
     rescue Excon::Errors::MovedPermanently, 'Expected(200) <=> Actual(301 Moved Permanently)'
       raise DirectoryDoesNotExist, dir_name
     end
@@ -24,20 +31,27 @@ class EasyS3
   end
 
   # Create private or public file into directory
-  def create_file(file_path, public = false)
+  def create_file(file_path, options={})
+    options[:digest] ||= false
+    options[:public] ||= false
+
     begin
       file = File.open(file_path)
     rescue
-      raise(FileNotFound, file_path)
+      raise FileNotFound, file_path
     end
 
-    filename = "#{File.basename(file_path)}_#{Digest::SHA1.hexdigest(File.basename(file_path))}"
+    filename = "#{File.basename(file_path)}"
+    filename += "_#{Digest::SHA1.hexdigest(File.basename(file_path))}" if options[:digest]
 
     file = @dir.files.create(
         key:    filename,
         body:   file,
-        public: public
+        public: options[:public]
     )
+
+    return file.public_url if options[:public] && file.public_url
+
     file.url((Time.now + 3600).to_i) # 1 hour
   end
 
