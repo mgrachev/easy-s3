@@ -6,25 +6,26 @@ require 'fog'
 describe EasyS3 do
   let(:bucket_name)             { 'my-bucket' }
   let(:bucket_not_exist_name)   { 'test' }
+  let(:region)                  { 'eu-west-1' }
   let(:s3)                      { EasyS3.new(bucket_name) }
   let(:file_path)               { File.join('spec', 'support', 'file.txt') }
   let(:file_not_exist_path)     { File.join('spec', 'support', 'file_not_exist.txt') }
 
   before :all do
     Fog.mock!
-    Fog.credentials = { aws_access_key_id: 'XXX', aws_secret_access_key: 'XXXX' }
+    Fog.credentials = { aws_access_key_id: 'XXX', aws_secret_access_key: 'XXXX' , region: 'eu-west-1' }
     connection = Fog::Storage.new(provider: 'AWS')
     connection.directories.create(key: 'my-bucket')
   end
 
   context '.initialize' do
     it 'should raise exception if call method without argument directory name' do
-      expect{ EasyS3.new }.to raise_error(ArgumentError, 'wrong number of arguments (0 for 1)')
+      expect{ EasyS3.new }.to raise_error(ArgumentError, 'wrong number of arguments (0 for 1..2)')
     end
 
     it 'should accept options hash as the second argument' do
       Fog.credentials = {}
-      EasyS3.new(bucket_name, access_key_id: 'XXX', secret_access_key: 'XXXX').should be_an_instance_of EasyS3
+      EasyS3.new(bucket_name, access_key_id: 'XXX', secret_access_key: 'XXXX', region: 'eu-west-1').should be_an_instance_of EasyS3
     end
 
     it 'should raise exception if missing options access_key_id or secret_access_key' do
@@ -50,7 +51,7 @@ describe EasyS3 do
 
     it 'should create file with digest' do
       url = s3.create_file(file_path, digest: true, public: true)
-      url.should == "https://#{bucket_name}.s3.amazonaws.com/#{File.basename(file_path)}_#{Digest::SHA1.hexdigest(File.basename(file_path))}"
+      url.should == "https://#{bucket_name}.s3-#{region}.amazonaws.com/#{File.basename(file_path)}_#{Digest::SHA1.hexdigest(File.basename(file_path))}"
     end
 
     it 'should create a public file' do
