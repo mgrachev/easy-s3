@@ -22,22 +22,22 @@ Or install it yourself as:
 
 ## Usage
 
-Create instance of EasyS3:
+Create an instance of EasyS3:
 
-    s3 = EasyS3.new('my-bucket', access_key_id: 'XXX', secret_access_key: 'XXXX')
+    s3 = EasyS3.new('my-bucket', access_key_id: 'XXX', secret_access_key: 'XXXX', region: 'eu-west-1')
     
-Create private or public file:
+Create a private or a public file:
 
     file_url = s3.create_file(path_to_file) # private
     file_url = s3.create_file(path_to_file, public: true) # public
     file_url = s3.create_file(path_to_file, digest: true) # with digest
     
-Delete file by url:
+Delete a file by url:
 
     file_url = s3.create_file(path_to_file)
     s3.delete_file(file_url)
     
-Get all files in bucket:
+Get all files in the bucket:
 
     s3.files
 
