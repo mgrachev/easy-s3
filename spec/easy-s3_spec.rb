@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'easy-s3'
 require 'fog'
 
-
 describe EasyS3 do
   let(:bucket_name)             { 'my-bucket' }
   let(:bucket_not_exist_name)   { 'test' }
@@ -20,7 +19,7 @@ describe EasyS3 do
 
   context '.initialize' do
     it 'should raise exception if call method without argument directory name' do
-      expect{ EasyS3.new }.to raise_error(ArgumentError, 'wrong number of arguments (0 for 1..2)')
+      expect{ EasyS3.new }.to raise_error ArgumentError
     end
 
     it 'should accept options hash as the second argument' do
