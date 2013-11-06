@@ -11,10 +11,12 @@ class EasyS3
   def initialize(dir_name, options={})
     options[:access_key_id]     ||= Fog.credentials[:aws_access_key_id]
     options[:secret_access_key] ||= Fog.credentials[:aws_secret_access_key]
+    options[:region]            ||= Fog.credentials[:region]
 
     Fog.credentials = {
         aws_access_key_id:      options[:access_key_id],
-        aws_secret_access_key:  options[:secret_access_key]
+        aws_secret_access_key:  options[:secret_access_key],
+        region:                 options[:region]
     }
 
     begin
