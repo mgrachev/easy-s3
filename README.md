@@ -2,9 +2,11 @@
 
 Easy use Amazon S3
 
-[![Build Status](https://travis-ci.org/mgrachev/easy-s3.png?branch=master)](https://travis-ci.org/mgrachev/easy-s3)
-[![Coverage Status](https://coveralls.io/repos/mgrachev/easy-s3/badge.png?branch=master)](https://coveralls.io/r/mgrachev/easy-s3?branch=master)
-[![Dependency Status](https://gemnasium.com/mgrachev/easy-s3.png)](https://gemnasium.com/mgrachev/easy-s3)
+[![Gem Version](https://badge.fury.io/rb/easy-s3.png)](http://badge.fury.io/rb/easy-s3)
+[![Build Status](https://travis-ci.org/mgrachev/dom_for.png?branch=master)](https://travis-ci.org/mgrachev/dom_for)
+[![Coverage Status](https://coveralls.io/repos/mgrachev/dom_for/badge.png?branch=master)](https://coveralls.io/r/mgrachev/dom_for?branch=master)
+[![Code Climate](https://codeclimate.com/github/mgrachev/easy-s3.png)](https://codeclimate.com/github/mgrachev/easy-s3)
+[![Dependency Status](https://gemnasium.com/mgrachev/dom_for.svg)](https://gemnasium.com/mgrachev/dom_for)
 
 ## Installation
 
