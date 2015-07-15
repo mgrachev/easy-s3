@@ -18,10 +18,6 @@ describe EasyS3 do
   end
 
   context '.initialize' do
-    it 'should raise exception if call method without argument directory name' do
-      expect{ EasyS3.new }.to raise_error ArgumentError
-    end
-
     it 'should accept options hash as the second argument' do
       Fog.credentials = {}
       EasyS3.new(bucket_name, access_key_id: 'XXX', secret_access_key: 'XXXX', region: 'eu-west-1').should be_an_instance_of EasyS3
@@ -50,7 +46,7 @@ describe EasyS3 do
 
     it 'should create file with digest' do
       url = s3.create_file(file_path, digest: true, public: true)
-      url.should == "https://#{bucket_name}.s3-#{region}.amazonaws.com/#{File.basename(file_path)}_#{Digest::SHA1.hexdigest(File.basename(file_path))}"
+      url.should match Digest::SHA1.hexdigest(File.basename(file_path))
     end
 
     it 'should create a public file' do
@@ -62,7 +58,7 @@ describe EasyS3 do
     it 'should create a private file' do
       url = s3.create_file(file_path)
       url.should be_an_instance_of String
-      url.should match /#{bucket_name}.+amazonaws.com.+AWSAccessKeyId=#{Fog.credentials[:aws_access_key_id]}/
+      url.should match /#{bucket_name}.+amazonaws.com.+X-Amz-Credential=#{Fog.credentials[:aws_access_key_id]}/
     end
   end
 
@@ -75,12 +71,12 @@ describe EasyS3 do
 
   context '#delete_file' do
     it 'should return false if file not found on Amazon S3' do
-      s3.delete_file('bad_file').should be_false
+      s3.delete_file('bad_file').should be_falsey
     end
 
     it 'should delete file by namea and return true' do
       url = s3.create_file(file_path)
-      s3.delete_file(url).should be_true
+      s3.delete_file(url).should be_truthy
     end
   end
 
