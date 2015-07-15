@@ -1,3 +1,9 @@
+## 0.4.0 (15/07/2015)
+
+### Enhancements
+* Update fog version
+* File digest before extension
+
 ## 0.3.0 (06/11/2013)
 
 ### Enhancements
