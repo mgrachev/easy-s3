@@ -19,7 +19,7 @@ describe EasyS3 do
 
   context '.initialize' do
     it 'should raise exception if call method without argument directory name' do
-      expect{ EasyS3.new }.to raise_error ArgumentError
+      expect{ EasyS3.new }.to raise_error(ArgumentError, 'wrong number of arguments (0 for 1..2)')
     end
 
     it 'should accept options hash as the second argument' do
@@ -50,7 +50,7 @@ describe EasyS3 do
 
     it 'should create file with digest' do
       url = s3.create_file(file_path, digest: true, public: true)
-      url.should == "https://#{bucket_name}.s3-#{region}.amazonaws.com/#{File.basename(file_path)}_#{Digest::SHA1.hexdigest(File.basename(file_path))}"
+      url.should match Digest::SHA1.hexdigest(File.basename(file_path))
     end
 
     it 'should create a public file' do
