@@ -18,10 +18,6 @@ describe EasyS3 do
   end
 
   context '.initialize' do
-    it 'should raise exception if call method without argument directory name' do
-      expect{ EasyS3.new }.to raise_error(ArgumentError, 'wrong number of arguments (0 for 1..2)')
-    end
-
     it 'should accept options hash as the second argument' do
       Fog.credentials = {}
       EasyS3.new(bucket_name, access_key_id: 'XXX', secret_access_key: 'XXXX', region: 'eu-west-1').should be_an_instance_of EasyS3
