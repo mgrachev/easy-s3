@@ -62,7 +62,7 @@ describe EasyS3 do
     it 'should create a private file' do
       url = s3.create_file(file_path)
       url.should be_an_instance_of String
-      url.should match /#{bucket_name}.+amazonaws.com.+AWSAccessKeyId=#{Fog.credentials[:aws_access_key_id]}/
+      url.should match /#{bucket_name}.+amazonaws.com.+X-Amz-Credential=#{Fog.credentials[:aws_access_key_id]}/
     end
   end
 
@@ -75,12 +75,12 @@ describe EasyS3 do
 
   context '#delete_file' do
     it 'should return false if file not found on Amazon S3' do
-      s3.delete_file('bad_file').should be_false
+      s3.delete_file('bad_file').should be_falsey
     end
 
     it 'should delete file by namea and return true' do
       url = s3.create_file(file_path)
-      s3.delete_file(url).should be_true
+      s3.delete_file(url).should be_truthy
     end
   end
 
