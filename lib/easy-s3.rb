@@ -2,9 +2,9 @@ require 'fog'
 require 'easy-s3/version'
 
 class EasyS3
-  class MissingOptions < StandardError; end
-  class DirectoryDoesNotExist < StandardError; end
-  class FileNotFound < StandardError; end
+  MissingOptions        = Class.new(StandardError)
+  DirectoryDoesNotExist = Class.new(StandardError)
+  FileNotFound          = Class.new(StandardError)
 
   attr_reader :fog, :dir
 
@@ -23,11 +23,11 @@ class EasyS3
       @fog = Fog::Storage.new(provider: 'AWS')
       @dir = @fog.directories.get(dir_name)
     rescue ArgumentError
-      raise MissingOptions, 'access_key_id or secret_access_key'
+      fail MissingOptions, 'access_key_id or secret_access_key'
     rescue Excon::Errors::MovedPermanently, 'Expected(200) <=> Actual(301 Moved Permanently)'
-      raise DirectoryDoesNotExist, dir_name
+      fail DirectoryDoesNotExist, dir_name
     end
-    raise DirectoryDoesNotExist, dir_name if @dir.nil?
+    fail DirectoryDoesNotExist, dir_name if @dir.nil?
 
     true
   end
@@ -37,16 +37,11 @@ class EasyS3
     options[:digest] ||= false
     options[:public] ||= false
 
-    begin
-      file = File.open(file_path)
-    rescue
-      raise FileNotFound, file_path
-    end
-
+    file      = File.open(file_path)
     extension = File.extname(file_path)
-    filename = File.basename(file_path, extension)
-    filename += "_#{Digest::SHA1.hexdigest(File.basename(file_path))}" if options[:digest]
-    filename += extension
+    filename  = File.basename(file_path, extension)
+    filename  += "_#{Digest::SHA1.hexdigest(File.basename(file_path))}" if options[:digest]
+    filename  += extension
 
     file = @dir.files.create(
         key:    filename,
@@ -57,6 +52,8 @@ class EasyS3
     return file.public_url if options[:public] && file.public_url
 
     file.url((Time.now + 3600).to_i) # 1 hour
+  rescue
+    fail FileNotFound, file_path
   end
 
   # Delete file by url
